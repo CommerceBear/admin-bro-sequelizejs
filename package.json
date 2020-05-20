@@ -1,5 +1,5 @@
 {
-  "name": "admin-bro-sequelizejs",
+  "name": "@commercebear/admin-bro-sequelizejs",
   "version": "0.4.2",
   "description": "Sequelize adapter for AdminBro",
   "main": "index.js",
@@ -9,9 +9,9 @@
     "sequelize": "./node_modules/.bin/sequelize",
     "lint": "./node_modules/eslint/bin/eslint.js './spec/**/*.js' './src/**/*.js'"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/SoftwareBrothers/admin-bro-sequelizejs.git"
+  "repository": "github:CommerceBear/admin-bro-sequelizejs",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   },
   "author": "Wojciech Krysiak",
   "license": "MIT",
