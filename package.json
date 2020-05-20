@@ -1,6 +1,6 @@
 {
   "name": "@commercebear/admin-bro-sequelizejs",
-  "version": "0.4.2",
+  "version": "0.4.2-bear.internal.0.0.1",
   "description": "Sequelize adapter for AdminBro",
   "main": "index.js",
   "scripts": {
