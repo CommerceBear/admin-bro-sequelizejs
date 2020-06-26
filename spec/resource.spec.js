@@ -50,7 +50,7 @@ describe('Resource', function () {
 
   describe('#properties', function () {
     it('returns all properties', function () {
-      const length = 7 // there are 7 properties in the User model (4 regular + __v and _id)
+      const length = 8 // there are 8 properties in the User model (5 regular + __v and _id)
       expect(this.resource.properties()).to.have.lengthOf(length)
     })
   })
@@ -58,6 +58,17 @@ describe('Resource', function () {
   describe('#property', function () {
     it('returns given property', function () {
       expect(this.resource.property('email')).to.be.an.instanceOf(Property)
+    })
+
+    it('returns null when property doesn\'t exit', function () {
+      expect(this.resource.property('some.imagine.property')).to.be.null
+    })
+
+    it('returns nested property for array field', function () {
+      const property = this.resource.property('arrayed.1')
+
+      expect(property).to.be.an.instanceOf(Property)
+      expect(property.type()).to.equal('string')
     })
   })
 
@@ -69,6 +80,47 @@ describe('Resource', function () {
 
       expect(records).to.have.lengthOf(1)
       expect(records[0]).to.be.instanceOf(BaseRecord)
+    })
+  })
+
+  describe('#find with filter', function () {
+    beforeEach(async function () {
+      this.params = {
+        gender: 'male',
+        email: 'john.doe@softwarebrothers.co',
+      }
+      this.record = await this.resource.create(this.params)
+    })
+
+    it('returns 1 BaseRecord when filtering on ENUMS', async function () {
+      const filter = new Filter({
+        gender: 'male',
+      }, this.resource)
+      const records = await this.resource.find(filter, { limit: 20, offset: 0, sort: { direction: 'asc', sortBy: 'id' } })
+
+      expect(records).to.have.lengthOf(1)
+      expect(records[0]).to.be.instanceOf(BaseRecord)
+      expect(records[0].params.gender).to.equal('male')
+    })
+
+    it('returns 0 BaseRecord when filtering on ENUMS', async function () {
+      const filter = new Filter({
+        gender: 'female',
+      }, this.resource)
+      const records = await this.resource.find(filter, { limit: 20, offset: 0, sort: { direction: 'asc', sortBy: 'id' } })
+
+      expect(records).to.have.lengthOf(0)
+    })
+
+    it('returns error when filtering on ENUMS with invalid value', async function () {
+      const filter = new Filter({
+        gender: 'XXX',
+      }, this.resource)
+      try {
+        await this.resource.find(filter, { limit: 20, offset: 0, sort: { direction: 'asc', sortBy: 'id' } })
+      } catch (error) {
+        expect(error).to.be.an.instanceOf(db.sequelize.DatabaseError)
+      }
     })
   })
 
